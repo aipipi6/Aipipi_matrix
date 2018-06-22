@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">@android:color/black</color>
+    <color name="white">@android:color/white</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="red">#E3173C</color>
+
+    <color name="whiteCCC">#CCCCCC</color>
+    <color name="whiteF1F1F1">#F1F1F1</color>
+    <color name="mainColor">#FF686f79</color>
+
+    <color name="lightBlue">#6294FF</color>
+    <color name="blue">#4274F6</color>
+    <color name="darkBlue">#2254D6</color>
+
+    <color name="lightGreen">#08FF08</color>
+    <color name="green">#09bb07</color>
+    <color name="darkGreen">#2BA245</color>
+
+    <color name="spliteline">#DEDEDE</color>
+</resources>

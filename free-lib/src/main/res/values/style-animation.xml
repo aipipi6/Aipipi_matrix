@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AnimationActivity" mce_bogus="1" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+    </style>
+
+    <style name="FromBottomAnimation">
+        <item name="android:windowEnterAnimation">@anim/bottom2up_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom2up_exit</item>
+    </style>
+    <style name="FromUpAnimation">
+        <item name="android:windowEnterAnimation">@anim/up2bottom_enter</item>
+        <item name="android:windowExitAnimation">@anim/up2bottom_exit</item>
+    </style>
+
+    <style name="FromRightAnimation">
+        <item name="android:windowEnterAnimation">@anim/right2left_enter</item>
+        <item name="android:windowExitAnimation">@anim/right2left_exit</item>
+
+    </style>
+</resources>

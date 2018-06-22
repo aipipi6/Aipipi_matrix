@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textSmall">12sp</dimen>
+    <dimen name="textNomal">14sp</dimen>
+    <dimen name="textBig">16sp</dimen>
+    <dimen name="textLargerBig">18sp</dimen>
+
+    <dimen name="titleBarHeight">42dp</dimen>
+    <dimen name="titleTextSize">16sp</dimen>
+    <dimen name="titleTextSmallSize">14sp</dimen>
+
+    <dimen name="spliteline">1px</dimen>
+
+    <dimen name="commonItemHeight">42dp</dimen>
+</resources>

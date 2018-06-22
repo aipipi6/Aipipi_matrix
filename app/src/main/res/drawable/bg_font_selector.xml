@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:drawable="@drawable/bg_btn_radius2dp_gradient"/>
+    <item android:state_selected="false" android:drawable="@drawable/bg_gray_frame_radius_2dp"/>
+
+</selector>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="windowBackground">#F0EFF5</color>
+
+    <color name="toolbarLeftColor">#333</color>
+    <color name="toolbarRightColor">@color/blue</color>
+    <color name="toolbarTitleColor">@color/black</color>
+    <color name="toolbarBackgroundColor">@color/white</color>
+
+    <color name="homeToolbackBackgroundColor">@color/toolbarBackgroundColor</color>
+    <color name="homeToolbackBackgroundPressColor">#FF575E66</color>
+
+    <color name="btnNomalStartColor">#4274F6</color>
+    <color name="btnNomalEndColor">#7A60FF</color>
+
+    <color name="btnPressStartColor">#126DFF</color>
+    <color name="btnPressEndColor">#744FFF</color>
+</resources>
