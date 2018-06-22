@@ -29,5 +29,4 @@ public class MatrixActivity extends AppCompatActivity {
         dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
         dotMatrixView.startScroll(100);
     }
-
 }
