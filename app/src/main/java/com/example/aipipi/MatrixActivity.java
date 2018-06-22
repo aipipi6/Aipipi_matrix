@@ -29,11 +29,11 @@ public class MatrixActivity extends AppCompatActivity {
         dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
         dotMatrixView.startScroll(100);
 
-        FontMsg fontMsg = new FontMsg(fontList);
-        for(int i = 0; i < fontList.size(); i++) {
-            byte[] bleBytes = fontMsg.getFontBytes(i);
-            LogUtils.e(StringUtil.byteArray2hexString(bleBytes));
-        }
+//        FontMsg fontMsg = new FontMsg(fontList);
+//        for(int i = 0; i < fontList.size(); i++) {
+//            byte[] bleBytes = fontMsg.getFontBytes(i);
+//            LogUtils.e(StringUtil.byteArray2hexString(bleBytes));
+//        }
     }
 
 }
