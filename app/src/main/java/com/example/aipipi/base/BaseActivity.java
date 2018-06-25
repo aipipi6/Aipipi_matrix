@@ -41,47 +41,46 @@ public class BaseActivity extends AppCompatActivity implements IActivity{
 
     /**
      * 显示加载进度dialog
-     *
-     * @param content
      */
+
+    public void showLoadingDialog() {
+        showLoadingDialog(null);
+    }
 
     @Override
     public void showLoadingDialog(String content) {
-        if(StringUtils.isEmpty(content)) {
-            content = "加载中";
-        }
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.setTitle(content);
-        } else {
-            hideLoadingDialog();
-            loadingDialog = new LoadingDialog(mContext, content);
-            loadingDialog.show();
-        }
+        showLoadingDialog(content, 0, null);
     }
 
     public void showLoadingDialog(String content, DialogInterface.OnCancelListener onCancelListener) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.setTitle(content);
-        } else {
-            hideLoadingDialog();
-            loadingDialog = new LoadingDialog(mContext, content);
-            loadingDialog.show();
+        showLoadingDialog(content, 0, onCancelListener);
+    }
+
+    public void showLoadingDialog(String content, int totalTime) {
+        showLoadingDialog(content, totalTime, null);
+    }
+
+    public void showLoadingDialog(int totalTime) {
+        showLoadingDialog(null, totalTime, null);
+    }
+
+    public void showLoadingDialog(String content, int totalTime,  DialogInterface.OnCancelListener onCancelListener) {
+        if(StringUtils.isEmpty(content)) {
+            content = "加载中";
         }
-        loadingDialog.setOnCancelListener(onCancelListener);
-        loadingDialog.setCanceledOnTouchOutside(true);
+        if(loadingDialog == null) {
+            loadingDialog = new LoadingDialog(mContext, content, totalTime);
+            loadingDialog.show();
+        } else {
+            loadingDialog.setContentText(content);
+        }
+
+        if(onCancelListener != null) {
+            loadingDialog.setOnCancelListener(onCancelListener);
+            loadingDialog.setCanceledOnTouchOutside(true);
+        }
     }
 
-    public void showLoadingDialog() {
-        showLoadingDialog("正在加载");
-    }
-
-    public void showToast(String msg) {
-        ToastUtils.showShort(msg);
-    }
-
-    public void showToast(@StringRes int stringRes) {
-        ToastUtils.showShort(stringRes);
-    }
 
     /**
      * 隐藏加载进度dialog
@@ -95,6 +94,15 @@ public class BaseActivity extends AppCompatActivity implements IActivity{
             loadingDialog = null;
         }
     }
+
+    public void showToast(String msg) {
+        ToastUtils.showShort(msg);
+    }
+
+    public void showToast(@StringRes int stringRes) {
+        ToastUtils.showShort(stringRes);
+    }
+
     @Override
     public void showKeyboard(boolean isShow) {
         if(isShow) {

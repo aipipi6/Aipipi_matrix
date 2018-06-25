@@ -53,7 +53,6 @@ public class BleMsgParser implements IBleParser {
             }
 
             offset = start;
-
             // 计算校验位
             byte crc0 = datas[start + Protocol.HEADER_LEN + dataLen];
             byte crc = Protocol.calcCheckSum(start, Protocol.HEADER_LEN + dataLen, datas);
