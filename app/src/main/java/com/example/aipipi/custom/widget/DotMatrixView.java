@@ -85,6 +85,7 @@ public class DotMatrixView extends View {
         this.scrollTime = scrollTime;
         isScroll = true;
         startColumn = -totalColumn;
+        handler.removeCallbacks(scrollTask);
         handler.postDelayed(scrollTask, scrollTime);
     }
 
@@ -114,7 +115,7 @@ public class DotMatrixView extends View {
 
         canvas.drawColor(Color.RED);
 
-        for(int i = 0; i < totalColumn; i++) {
+        for(int i = 0; i < totalColumn + 1; i++) {
             for (int j = 0; j < totalRow; j++) {
                 float x = getXPosition(i);
                 float y = (j + 1) * dotSpace + j * dotSize + dotSize / 2;

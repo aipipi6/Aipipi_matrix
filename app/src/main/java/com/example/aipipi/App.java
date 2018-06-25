@@ -6,6 +6,8 @@ import android.view.Gravity;
 import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
+import com.example.aipipi.ble.BleManager;
+import com.example.aipipi.protocol.BleMsgParser;
 
 /**
  * Created by chenjun on 2018/6/8.
@@ -17,7 +19,7 @@ public class App extends Application{
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-
+        BleManager.getInstance().init(this, new BleMsgParser());
         initToast();
     }
 

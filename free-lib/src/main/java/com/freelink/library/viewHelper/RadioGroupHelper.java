@@ -10,15 +10,17 @@ public class RadioGroupHelper implements View.OnClickListener {
     private OnCheckedChangeListener onCheckedChangeListener;
     private int checkedRadioIndex;
 
-    public RadioGroupHelper(ViewGroup viewGroup) {
+    public RadioGroupHelper(ViewGroup viewGroup, int checkedRadioIndex) {
         this.viewGroup = viewGroup;
-        this.checkedRadioIndex = -1;
+        this.checkedRadioIndex = checkedRadioIndex;
 
         int childCount = viewGroup.getChildCount();
         for(int i = 0; i < childCount; i++) {
             View childView = viewGroup.getChildAt(i);
             childView.setOnClickListener(this);
             childView.setTag(i);
+
+            childView.setSelected(i == checkedRadioIndex);
         }
     }
 
