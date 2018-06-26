@@ -27,6 +27,8 @@
         <activity android:name=".MatrixActivity"
             android:screenOrientation="landscape">
         </activity>
+
+        <service android:name=".ble.BleService"/>
     </application>
 
 </manifest>

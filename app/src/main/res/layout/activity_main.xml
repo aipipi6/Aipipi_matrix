@@ -6,31 +6,25 @@
     android:orientation="vertical">
 
     <com.freelink.library.widget.ImageTextView
+        android:id="@+id/itv_ble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:drawablePadding="2dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="未连接，请点击连接"
-        android:textColor="#666"
+        android:text="@string/ble_disconnect"
+        android:textColor="@color/color_666_blue_selector"
         android:textSize="14sp"
-        app:drawableLeft="@mipmap/bluetooth_gray"
+        app:drawableLeft="@drawable/ble_icon_selector"
         app:drawableSize="20dp" />
-
-    <!--<style name="AppointmentTimeStyle">-->
-    <!--<item name="android:layout_width">90dp</item>-->
-    <!--<item name="android:layout_height">25dp</item>-->
-    <!--<item name="android:gravity">center</item>-->
-    <!--<item name="android:clickable">true</item>-->
-    <!--<item name="android:textColor">@color/zw_text_333_white_selector</item>-->
-    <!--<item name="android:background">@drawable/zw_bg_calendar_selector</item>-->
-    <!--</style>-->
 
     <LinearLayout
         android:id="@+id/ll_font"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="16dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -43,7 +37,8 @@
             android:clickable="true"
             android:gravity="center"
             android:text="宋体"
-            android:textColor="@color/color_333_white_selector_selector" />
+            android:textColor="@color/color_333_white_selector"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_font_h"
@@ -55,7 +50,8 @@
             android:clickable="true"
             android:gravity="center"
             android:text="黑体"
-            android:textColor="@color/color_333_white_selector_selector" />
+            android:textColor="@color/color_333_white_selector"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_font_f"
@@ -67,7 +63,8 @@
             android:clickable="true"
             android:gravity="center"
             android:text="仿宋"
-            android:textColor="@color/color_333_white_selector_selector" />
+            android:textColor="@color/color_333_white_selector"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_font_k"
@@ -79,7 +76,84 @@
             android:clickable="true"
             android:gravity="center"
             android:text="楷体"
-            android:textColor="@color/color_333_white_selector_selector" />
+            android:textColor="@color/color_333_white_selector"
+            android:textSize="14sp" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/bg_edittext"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:gravity="top|left"
+            android:lines="6"
+            android:maxLength="120"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="4dp"
+            android:layout_marginRight="4dp"
+            android:text="0/120"
+            android:textColor="#999"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_preview"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:textColor="#333"
+            android:gravity="center"
+            android:text="预览"
+            android:clickable="true"
+            android:background="@drawable/bg_btn_white_radius18dp"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="48dp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="发送"
+            android:background="@drawable/bg_btn_blue_radius18dp"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <com.example.aipipi.custom.widget.DotMatrixView
+        android:id="@+id/multiDotMatrixView"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"/>
+
 
 </LinearLayout>

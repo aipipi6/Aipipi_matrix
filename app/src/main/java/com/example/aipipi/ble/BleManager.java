@@ -57,7 +57,7 @@ public class BleManager {
     private int deviceState = STATE_NONE;   // 设备状态
     private boolean isReceive = true;
     private Context context;
-    private ExecutorService singleThreadPool;
+    private ExecutorService threadPool;
     private Handler handler = new Handler();
     private IBleParser bleParser;
 
@@ -65,7 +65,7 @@ public class BleManager {
     private BleManager() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNameFormat("demo-pool-%d").build();
-        singleThreadPool = new ThreadPoolExecutor(2, 2,
+        threadPool = new ThreadPoolExecutor(2, 2,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
     }
@@ -199,12 +199,12 @@ public class BleManager {
         }
         cancelDiscovery();
         disConnect();
-        singleThreadPool.execute(new ConnectRunnable(remoteDevice));
+        threadPool.execute(new ConnectRunnable(remoteDevice));
     }
 
 
     public void send(byte... bytes) {
-        singleThreadPool.execute(new SendRunnable(bytes));
+        threadPool.execute(new SendRunnable(bytes));
     }
 
 
@@ -406,9 +406,6 @@ public class BleManager {
     public void release() {
         context.unregisterReceiver(mReceiver);
         disConnect();
-        if(singleThreadPool != null) {
-            singleThreadPool.shutdown();
-        }
     }
 
 
