@@ -1,10 +1,11 @@
-package com.example.aipipi;
+package com.example.aipipi.activity;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.example.aipipi.R;
+import com.example.aipipi.base.BaseCallBack;
 import com.example.aipipi.base.BaseToolBarActivity;
 import com.example.aipipi.ble.BleService;
 import com.example.aipipi.ble.observer.BleConnectionObserver;
@@ -22,7 +25,6 @@ import com.example.aipipi.utils.font.FontUtils;
 import com.freelink.library.viewHelper.RadioGroupHelper;
 import com.freelink.library.widget.ImageTextView;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,6 +32,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseToolBarActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
 
     @BindView(R.id.itv_ble)
@@ -102,7 +105,7 @@ public class MainActivity extends BaseToolBarActivity {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     if(!bleService.isConnected()
-                            && bleService.isConnecting()) {
+                            && !bleService.isConnecting()) {
                         showToast("未搜索到设备");
                     }
                     bleService.cancelDiscovery();
@@ -120,8 +123,9 @@ public class MainActivity extends BaseToolBarActivity {
         @Override
         public void onScanFinished() {
             if(!bleService.isConnected()
-                    && bleService.isConnecting()) {
+                    && !bleService.isConnecting()) {
                 hideLoadingDialog();
+                showToast("未搜索到设备");
             }
         }
     };
@@ -157,34 +161,59 @@ public class MainActivity extends BaseToolBarActivity {
         }
     };
 
-    @OnClick(R.id.tv_preview)
-    void onPreview() {
-        String text = editText.getText().toString();
+    private void makeFontList(final BaseCallBack<List<byte[]>> callBack) {
+        final String text = editText.getText().toString();
         if(StringUtil.isEmpty(text)) {
             showToast("请输入文本");
             return;
         }
         int index = radioGroupHelper.getCheckedRadioIndex();
+        final String fontType = sFontTyps[index];
+        showLoadingDialog("生成字库中");
+        new AsyncTask<Void, Void, List<byte[]>>() {
+            @Override
+            protected List<byte[]> doInBackground(Void... params) {
+                return  FontUtils.makeFont24(fontType, text);
+            }
 
-        List<byte[]> fontList = FontUtils.makeFont24(sFontTyps[index], text);
-        dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
-        dotMatrixView.startScroll(100);
+            @Override
+            protected void onPostExecute(List<byte[]> bytes) {
+                hideLoadingDialog();
+                callBack.onCallBack(bytes);
+            }
+        }.execute();
+    }
+
+    @OnClick(R.id.tv_preview)
+    void onPreview() {
+        makeFontList(new BaseCallBack<List<byte[]>>() {
+            @Override
+            public void onCallBack(List<byte[]> fontList) {
+                dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
+                dotMatrixView.startScroll(100);
+            }
+        });
     }
 
     @OnClick(R.id.tv_send)
     void onSendFont() {
         if(bleService.isConnected()) {
-            String text = editText.getText().toString();
-            if(StringUtil.isEmpty(text)) {
-                showToast("请输入文本");
-                return;
-            }
+            makeFontList(new BaseCallBack<List<byte[]>>() {
+                @Override
+                public void onCallBack(List<byte[]> obj) {
 
-            try {
-                bleService.send( text.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+                }
+            });
+//            String text = editText.getText().toString();
+//            if(StringUtil.isEmpty(text)) {
+//                showToast("请输入文本");
+//                return;
+//            }
+//            try {
+//                bleService.send( text.getBytes("UTF-8"));
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
         } else {
             showToast("请先连接蓝牙设备");
         }
@@ -193,14 +222,22 @@ public class MainActivity extends BaseToolBarActivity {
     @OnClick(R.id.itv_ble)
     void onConnectBle() {
         if(!bleService.isConnected()
-                && bleService.isConnecting()) {
+                && !bleService.isConnecting()) {
             bleService.startDiscovery();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bleService != null) {
+            bleService.registerBleScanObserver(false, bleScanObserver);
+            bleService.registerBleConnectionObserver(false, bleConnectionObserver);
         }
     }
 
 
     private long exitTime = 0;
-
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - exitTime > 2000) {
@@ -212,14 +249,4 @@ public class MainActivity extends BaseToolBarActivity {
         }
     }
 
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(bleService != null) {
-            bleService.registerBleScanObserver(false, bleScanObserver);
-            bleService.registerBleConnectionObserver(false, bleConnectionObserver);
-        }
-    }
 }
