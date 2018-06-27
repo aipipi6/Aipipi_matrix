@@ -147,7 +147,7 @@
 
     </LinearLayout>
 
-    <com.example.aipipi.custom.widget.DotMatrixView
+    <com.example.aipipi.widget.DotMatrixView
         android:id="@+id/multiDotMatrixView"
         android:layout_width="match_parent"
         android:layout_height="64dp"

@@ -22,7 +22,7 @@ class Font16 {
 		fontStyleMap.put("幼圆", "y");
 	}
 	
-	static List<byte[]> makeFont(String fontStyle, String hzString) {
+	static List<byte[]> makeFont(String fontStyle, String hzString, OnMakeFontListener onMakeFontListener) {
 		
 		List<byte[]> fontHexList = new ArrayList<>();
 		 
@@ -79,6 +79,9 @@ class Font16 {
 				}
 				fontHexList.add(fontHex);
 
+				if(onMakeFontListener != null) {
+					onMakeFontListener.schedule(i, hzString.length());
+				}
 
 			}
 		} catch (IOException e) {

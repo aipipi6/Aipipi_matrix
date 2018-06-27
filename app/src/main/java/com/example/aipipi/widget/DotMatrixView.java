@@ -1,4 +1,4 @@
-package com.example.aipipi.custom.widget;
+package com.example.aipipi.widget;
 
 
 import android.content.Context;
@@ -8,11 +8,7 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
-
-import com.blankj.utilcode.util.LogUtils;
 
 
 public class DotMatrixView extends View {

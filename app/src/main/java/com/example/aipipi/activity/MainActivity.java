@@ -19,7 +19,9 @@ import com.example.aipipi.base.BaseToolBarActivity;
 import com.example.aipipi.ble.BleService;
 import com.example.aipipi.ble.observer.BleConnectionObserver;
 import com.example.aipipi.ble.observer.BleScanObserver;
-import com.example.aipipi.custom.widget.DotMatrixView;
+import com.example.aipipi.dialog.MakeFontDialog;
+import com.example.aipipi.entity.TextFont;
+import com.example.aipipi.widget.DotMatrixView;
 import com.example.aipipi.utils.StringUtil;
 import com.example.aipipi.utils.font.FontUtils;
 import com.freelink.library.viewHelper.RadioGroupHelper;
@@ -50,7 +52,7 @@ public class MainActivity extends BaseToolBarActivity {
     private RadioGroupHelper radioGroupHelper;
     final static String[] sFontTyps = {"宋体", "黑体", "仿宋", "楷体"};
 
-    private BleService bleService;
+    public static BleService sBleService;
 
     @Override
     protected int getLayoutId() {
@@ -78,15 +80,15 @@ public class MainActivity extends BaseToolBarActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             BleService.InnerBinder binder = (BleService.InnerBinder) service;
-            bleService = binder.getService();
-            bleService.registerBleScanObserver(true, bleScanObserver);
-            bleService.registerBleConnectionObserver(true, bleConnectionObserver);
-            if(bleService.isConnected()) {
+            sBleService = binder.getService();
+            sBleService.registerBleScanObserver(true, bleScanObserver);
+            sBleService.registerBleConnectionObserver(true, bleConnectionObserver);
+            if(sBleService.isConnected()) {
                 itvBle.setText(R.string.ble_connected);
                 itvBle.setSelected(true);
             } else {
                 itvBle.setText(R.string.ble_disconnect);
-                bleService.startDiscovery();
+                sBleService.startDiscovery();
                 itvBle.setSelected(false);
             }
             LogUtils.e("bleServiceConnection");
@@ -104,11 +106,11 @@ public class MainActivity extends BaseToolBarActivity {
             showLoadingDialog("搜索设备中", new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    if(!bleService.isConnected()
-                            && !bleService.isConnecting()) {
+                    if(!sBleService.isConnected()
+                            && !sBleService.isConnecting()) {
                         showToast("未搜索到设备");
                     }
-                    bleService.cancelDiscovery();
+                    sBleService.cancelDiscovery();
                 }
             });
         }
@@ -116,14 +118,14 @@ public class MainActivity extends BaseToolBarActivity {
         @Override
         public void onScanDevice(BluetoothDevice device) {
             if(device.getAddress().equalsIgnoreCase(DEFAULT_BLE_DEVICE_ADDR)) {
-                bleService.connect(device);
+                sBleService.connect(device);
             }
         }
 
         @Override
         public void onScanFinished() {
-            if(!bleService.isConnected()
-                    && !bleService.isConnecting()) {
+            if(!sBleService.isConnected()
+                    && !sBleService.isConnecting()) {
                 hideLoadingDialog();
                 showToast("未搜索到设备");
             }
@@ -161,56 +163,55 @@ public class MainActivity extends BaseToolBarActivity {
         }
     };
 
-    private void makeFontList(final BaseCallBack<List<byte[]>> callBack) {
-        final String text = editText.getText().toString();
+    TextFont textFont;
+    private void resetTextFont() {
+        if(textFont != null) {
+            textFont = new TextFont();
+        }
+
+        String text = editText.getText().toString();
         if(StringUtil.isEmpty(text)) {
             showToast("请输入文本");
             return;
         }
         int index = radioGroupHelper.getCheckedRadioIndex();
         final String fontType = sFontTyps[index];
-        showLoadingDialog("生成字库中");
-        new AsyncTask<Void, Void, List<byte[]>>() {
-            @Override
-            protected List<byte[]> doInBackground(Void... params) {
-                return  FontUtils.makeFont24(fontType, text);
-            }
 
-            @Override
-            protected void onPostExecute(List<byte[]> bytes) {
-                hideLoadingDialog();
-                callBack.onCallBack(bytes);
-            }
-        }.execute();
+        textFont.setText(text);
+        textFont.setFontSize(FontUtils.FONT_SIZE_24);
+        textFont.setFontType(fontType);
     }
 
     @OnClick(R.id.tv_preview)
     void onPreview() {
-        makeFontList(new BaseCallBack<List<byte[]>>() {
-            @Override
-            public void onCallBack(List<byte[]> fontList) {
-                dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
-                dotMatrixView.startScroll(100);
-            }
-        });
+        resetTextFont();
+        MakeFontDialog dialog = new MakeFontDialog(context, textFont);
+        dialog.show();
+//        makeFontList(new BaseCallBack<List<byte[]>>() {
+//            @Override
+//            public void onCallBack(List<byte[]> fontList) {
+//                dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
+//                dotMatrixView.startScroll(100);
+//            }
+//        });
     }
 
     @OnClick(R.id.tv_send)
     void onSendFont() {
-        if(bleService.isConnected()) {
-            makeFontList(new BaseCallBack<List<byte[]>>() {
-                @Override
-                public void onCallBack(List<byte[]> obj) {
-
-                }
-            });
+        if(sBleService.isConnected()) {
+//            makeFontList(new BaseCallBack<List<byte[]>>() {
+//                @Override
+//                public void onCallBack(List<byte[]> obj) {
+//
+//                }
+//            });
 //            String text = editText.getText().toString();
 //            if(StringUtil.isEmpty(text)) {
 //                showToast("请输入文本");
 //                return;
 //            }
 //            try {
-//                bleService.send( text.getBytes("UTF-8"));
+//                sBleService.send( text.getBytes("UTF-8"));
 //            } catch (UnsupportedEncodingException e) {
 //                e.printStackTrace();
 //            }
@@ -221,18 +222,19 @@ public class MainActivity extends BaseToolBarActivity {
 
     @OnClick(R.id.itv_ble)
     void onConnectBle() {
-        if(!bleService.isConnected()
-                && !bleService.isConnecting()) {
-            bleService.startDiscovery();
+        if(!sBleService.isConnected()
+                && !sBleService.isConnecting()) {
+            sBleService.startDiscovery();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(bleService != null) {
-            bleService.registerBleScanObserver(false, bleScanObserver);
-            bleService.registerBleConnectionObserver(false, bleConnectionObserver);
+        if(sBleService != null) {
+            sBleService.registerBleScanObserver(false, bleScanObserver);
+            sBleService.registerBleConnectionObserver(false, bleConnectionObserver);
+            sBleService = null;
         }
     }
 

@@ -7,25 +7,25 @@ public class FontUtils {
 	public static final int FONT_SIZE_16 = 16;
 	public static final int FONT_SIZE_24 = 24;
 	
-	public static List<byte[]> makeFont16(String fontStyle, String hzString) {
-		return makeFont(FONT_SIZE_16, fontStyle, hzString);
+	public static List<byte[]> makeFont16(String fontStyle, String hzString, OnMakeFontListener onMakeFontListener) {
+		return makeFont(FONT_SIZE_16, fontStyle, hzString, onMakeFontListener);
 	}
 	
-	public static List<byte[]> makeFont24(String fontStyle, String hzString) {
-		return makeFont(FONT_SIZE_24, fontStyle, hzString);
+	public static List<byte[]> makeFont24(String fontStyle, String hzString, OnMakeFontListener onMakeFontListener) {
+		return makeFont(FONT_SIZE_24, fontStyle, hzString, onMakeFontListener);
 	}
 	
-	public static List<byte[]> makeFont(int fontSize, String fontStyle, String hzString) {
+	public static List<byte[]> makeFont(int fontSize, String fontStyle, String hzString, OnMakeFontListener onMakeFontListener) {
 		
 		List<byte[]>  fList = null;
 		switch (fontSize) {
 		
 		case FONT_SIZE_16:
-			fList = Font16.makeFont(fontStyle, hzString);
+			fList = Font16.makeFont(fontStyle, hzString, onMakeFontListener);
 			break;
 			
 		case FONT_SIZE_24:
-			fList = Font24.makeFont(fontStyle, hzString);
+			fList = Font24.makeFont(fontStyle, hzString, onMakeFontListener);
 			break;
 
 		default:
@@ -85,7 +85,7 @@ public class FontUtils {
 	}
 
 	public static boolean[][] makeMatrix(int fontSize, String fontStyle, String hzString) {
-		List<byte[]> fontHexList =  makeFont(fontSize, fontStyle, hzString);
+		List<byte[]> fontHexList =  makeFont(fontSize, fontStyle, hzString, null);
 		return convertMatrix(fontSize, fontHexList);
 	}
 

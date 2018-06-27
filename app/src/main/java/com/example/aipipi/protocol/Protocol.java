@@ -6,13 +6,15 @@ package com.example.aipipi.protocol;
 
 public class Protocol {
 
+
+    public static final byte CMD_UPTATE_FONT = (byte) 0x01;
+    public static final byte ACK_UPTATE_FONT = (byte) 0x02;
+
+
     public static final byte START_TAG1 = (byte) 0x90;
     public static final byte START_TAG2 = (byte) 0x96;
     public static final int HEADER_LEN = 5;
     public static final int CKSUM_LEN = 1;
-
-    public static final byte CMD_FONT = (byte) 0x01;
-
 
     public static byte[] newBytes(byte cmd, int len) {
         byte[] bytes = new byte[HEADER_LEN + len + CKSUM_LEN];

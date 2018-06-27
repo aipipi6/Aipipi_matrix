@@ -65,8 +65,8 @@ public class BleMsgParser implements IBleParser {
 
             BaseBleMsgEntity entity = null;
             switch (dataType) {
-                case 1:
-//                    entity = new CanMsgEntity();
+                case Protocol.ACK_UPTATE_FONT:
+                    entity = new UpdateAckMsg();
                     break;
 
                 default:

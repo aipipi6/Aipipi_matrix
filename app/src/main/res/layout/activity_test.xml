@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.aipipi.custom.widget.DotMatrixView
+    <com.example.aipipi.widget.DotMatrixView
         android:id="@+id/multiDotMatrixView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

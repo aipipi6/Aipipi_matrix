@@ -21,7 +21,7 @@ class Font24 {
 		fontStyleMap.put("宋体", "S");
 	}
 
-	static List<byte[]> makeFont(String fontStyle, String hzString) {
+	static List<byte[]> makeFont(String fontStyle, String hzString, OnMakeFontListener onMakeFontListener) {
 
 		List<byte[]> fontHexList = new ArrayList<>();
 
@@ -56,6 +56,10 @@ class Font24 {
 				is.close();
 				
 				fontHexList.add(fontHex);
+
+				if(onMakeFontListener != null) {
+					onMakeFontListener.schedule(i, hzString.length());
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
