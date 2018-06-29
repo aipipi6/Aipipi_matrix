@@ -20,7 +20,9 @@ import com.example.aipipi.ble.BleService;
 import com.example.aipipi.ble.observer.BleConnectionObserver;
 import com.example.aipipi.ble.observer.BleScanObserver;
 import com.example.aipipi.dialog.MakeFontDialog;
+import com.example.aipipi.dialog.UpdateFontDialog;
 import com.example.aipipi.entity.TextFont;
+import com.example.aipipi.utils.font.OnMakeFontListener;
 import com.example.aipipi.widget.DotMatrixView;
 import com.example.aipipi.utils.StringUtil;
 import com.example.aipipi.utils.font.FontUtils;
@@ -35,7 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends BaseToolBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
+    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:37:00:B6:2E";
 
     @BindView(R.id.itv_ble)
     ImageTextView itvBle;
@@ -51,6 +53,7 @@ public class MainActivity extends BaseToolBarActivity {
 
     private RadioGroupHelper radioGroupHelper;
     final static String[] sFontTyps = {"宋体", "黑体", "仿宋", "楷体"};
+    private TextFont textFont;
 
     public static BleService sBleService;
 
@@ -163,9 +166,45 @@ public class MainActivity extends BaseToolBarActivity {
         }
     };
 
-    TextFont textFont;
+    @OnClick(R.id.tv_preview)
+    void onPreview() {
+        resetTextFont();
+        makeFont(new BaseCallBack<List<byte[]>>() {
+            @Override
+            public void onCallBack(List<byte[]> obj) {
+                dotMatrixView.setMatrix(FontUtils.convertMatrix(textFont.getFontSize(), textFont.getFontList()));
+                dotMatrixView.startScroll(100);
+            }
+        });
+    }
+
+    @OnClick(R.id.tv_send)
+    void onSendFont() {
+        if(sBleService.isConnected()) {
+            resetTextFont();
+            makeFont(new BaseCallBack<List<byte[]>>() {
+                @Override
+                public void onCallBack(List<byte[]> fontList) {
+                    UpdateFontDialog updateFontDialog = new UpdateFontDialog(context, fontList);
+                    updateFontDialog.show();
+                    updateFontDialog.startUpdate();
+                }
+            });
+        } else {
+            showToast("请先连接蓝牙设备");
+        }
+    }
+
+    @OnClick(R.id.itv_ble)
+    void onConnectBle() {
+        if(!sBleService.isConnected()
+                && !sBleService.isConnecting()) {
+            sBleService.startDiscovery();
+        }
+    }
+
     private void resetTextFont() {
-        if(textFont != null) {
+        if(textFont == null) {
             textFont = new TextFont();
         }
 
@@ -178,54 +217,43 @@ public class MainActivity extends BaseToolBarActivity {
         final String fontType = sFontTyps[index];
 
         textFont.setText(text);
-        textFont.setFontSize(FontUtils.FONT_SIZE_24);
+        textFont.setFontSize(FontUtils.FONT_SIZE_16);
         textFont.setFontType(fontType);
     }
 
-    @OnClick(R.id.tv_preview)
-    void onPreview() {
-        resetTextFont();
-        MakeFontDialog dialog = new MakeFontDialog(context, textFont);
-        dialog.show();
-//        makeFontList(new BaseCallBack<List<byte[]>>() {
-//            @Override
-//            public void onCallBack(List<byte[]> fontList) {
-//                dotMatrixView.setMatrix(FontUtils.convertMatrix24(fontList));
-//                dotMatrixView.startScroll(100);
-//            }
-//        });
-    }
 
-    @OnClick(R.id.tv_send)
-    void onSendFont() {
-        if(sBleService.isConnected()) {
-//            makeFontList(new BaseCallBack<List<byte[]>>() {
-//                @Override
-//                public void onCallBack(List<byte[]> obj) {
-//
-//                }
-//            });
-//            String text = editText.getText().toString();
-//            if(StringUtil.isEmpty(text)) {
-//                showToast("请输入文本");
-//                return;
-//            }
-//            try {
-//                sBleService.send( text.getBytes("UTF-8"));
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
-        } else {
-            showToast("请先连接蓝牙设备");
+    private void makeFont(final BaseCallBack<List<byte[]>> callBack) {
+        if(textFont.getText().length() > 10) {
+            showLoadingDialog("生成字库中");
         }
-    }
+        new AsyncTask<Void, Integer, List<byte[]>>() {
+            @Override
+            protected List<byte[]> doInBackground(Void... params) {
 
-    @OnClick(R.id.itv_ble)
-    void onConnectBle() {
-        if(!sBleService.isConnected()
-                && !sBleService.isConnecting()) {
-            sBleService.startDiscovery();
-        }
+                return  FontUtils.makeFont(textFont.getFontSize(), textFont.getFontType(), textFont.getText(), new OnMakeFontListener() {
+                    @Override
+                    public void schedule(int current, int total) {
+                        publishProgress(current, total);
+                    }
+                });
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                int current = values[0];
+                int total = values[1];
+                float progress = current / (float) total;
+            }
+
+            @Override
+            protected void onPostExecute(List<byte[]> bytes) {
+                textFont.setFontList(bytes);
+                hideLoadingDialog();
+                if(callBack != null) {
+                    callBack.onCallBack(bytes);
+                }
+            }
+        }.execute();
     }
 
     @Override

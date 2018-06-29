@@ -1,5 +1,6 @@
 package com.example.aipipi.utils.font;
 
+import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.Utils;
 
 import java.io.IOException;
@@ -35,15 +36,17 @@ class Font16 {
 				String zkFileName = null;
 				
 				char hzChar = hz.charAt(0);
-				if(hzChar < 0x80) {
+				if(FontUtils.isAscII(hzChar)) {
 					zkFileName = "font/asc/ASC16_8";
 					IOffset = (hzChar - 32) * 16;
 					fontHexLen = 16;
-				} else {
+				} else if(FontUtils.isChinese(hzChar)){
 					String c = fontStyleMap.get(fontStyle);
 					zkFileName = "font/16x16/hzk16" + (c == null ? "s" : c);
 					IOffset = getOffset(hz);
 					fontHexLen = 32;
+				} else {
+					continue;
 				}
 
 				InputStream is = Utils.getApp().getAssets().open(zkFileName);

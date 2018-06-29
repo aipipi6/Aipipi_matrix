@@ -46,7 +46,7 @@ public class BleMsgParser implements IBleParser {
                 break;
             }
             int dataType = datas[start + 2];
-            int dataLen = ByteCalcUtil.getU16FromArray(3, datas);
+            int dataLen = datas[start + 3];
             if (totalLen < start + Protocol.HEADER_LEN + dataLen + Protocol.CKSUM_LEN) {
                 // 数据不够，继续接收
                 break;

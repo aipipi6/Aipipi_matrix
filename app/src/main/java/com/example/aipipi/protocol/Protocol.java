@@ -8,12 +8,12 @@ public class Protocol {
 
 
     public static final byte CMD_UPTATE_FONT = (byte) 0x01;
-    public static final byte ACK_UPTATE_FONT = (byte) 0x02;
+    public static final byte ACK_UPTATE_FONT = (byte) 0x11;
 
 
     public static final byte START_TAG1 = (byte) 0x90;
     public static final byte START_TAG2 = (byte) 0x96;
-    public static final int HEADER_LEN = 5;
+    public static final int HEADER_LEN = 4;
     public static final int CKSUM_LEN = 1;
 
     public static byte[] newBytes(byte cmd, int len) {
@@ -21,9 +21,7 @@ public class Protocol {
         bytes[0] = START_TAG1;
         bytes[1] = START_TAG2;
         bytes[2] = cmd;
-        bytes[3] =  (byte) ((len >> 8) & 0xFF);
-        bytes[4] =  (byte) ((len     ) & 0xFF);
-
+        bytes[3] =  (byte) (len & 0xFF);
         return bytes;
     }
 

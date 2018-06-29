@@ -15,10 +15,6 @@ import com.freelink.library.widget.CircularProgressView;
 
 import java.util.List;
 
-/**
- * Created by chenjun on 2018/6/27.
- */
-
 public class MakeFontDialog extends BaseNormalDialog {
 
 
@@ -46,31 +42,7 @@ public class MakeFontDialog extends BaseNormalDialog {
     }
 
     private void makeFontAsync() {
-        new AsyncTask<Void, Integer, List<byte[]>>() {
-            @Override
-            protected List<byte[]> doInBackground(Void... params) {
 
-                return  FontUtils.makeFont(textFont.getFontSize(), textFont.getFontType(), textFont.getText(), new OnMakeFontListener() {
-                    @Override
-                    public void schedule(int current, int total) {
-                        publishProgress(current, total);
-                    }
-                });
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                int current = values[0];
-                int total = values[1];
-                float progress = current / (float) total;
-                circularProgressView.setProgress(progress);
-            }
-
-            @Override
-            protected void onPostExecute(List<byte[]> bytes) {
-                dismiss();
-                textFont.setFontList(bytes);
-            }
-        }.execute();
     }
+
 }

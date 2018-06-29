@@ -1,10 +1,12 @@
 package com.example.aipipi.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.example.aipipi.R;
 import com.example.aipipi.activity.MainActivity;
 import com.example.aipipi.ble.entity.BaseBleMsgEntity;
@@ -12,6 +14,7 @@ import com.example.aipipi.ble.observer.BleReceiveObserver;
 import com.example.aipipi.protocol.Protocol;
 import com.example.aipipi.protocol.UpdateAckMsg;
 import com.freelink.library.dialog.BaseNormalDialog;
+import com.freelink.library.dialog.CustomAlertDialog;
 import com.freelink.library.widget.CircularProgressView;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class UpdateFontDialog extends BaseNormalDialog {
     private static final String TAG = UpdateFontDialog.class.getSimpleName();
     private CircularProgressView circularProgressView;
     private List<byte[]> fontList;
+    private CustomAlertDialog stopDialog;
 
     public UpdateFontDialog(@NonNull Context context, @NonNull List<byte[]> fontList) {
         super(context);
@@ -40,9 +44,13 @@ public class UpdateFontDialog extends BaseNormalDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCanceledOnTouchOutside(false);
         circularProgressView = findViewById(R.id.CircularProgressView);
 
         MainActivity.sBleService.registerBleReceiveObserver(true, bleReceiveObserver);
+    }
+
+    public void startUpdate() {
 
         sendFontMsg(0);
     }
@@ -60,6 +68,7 @@ public class UpdateFontDialog extends BaseNormalDialog {
                 } else {
                     Log.i(TAG, "update font success");
                     dismiss();
+                    ToastUtils.showShort("上传字库成功");
                 }
             }
         }
@@ -85,6 +94,37 @@ public class UpdateFontDialog extends BaseNormalDialog {
     public void dismiss() {
         super.dismiss();
         MainActivity.sBleService.registerBleReceiveObserver(false, bleReceiveObserver);
+
+        if(stopDialog != null && stopDialog.isShowing()) {
+            stopDialog.dismiss();
+            stopDialog = null;
+        }
     }
 
+    @Override
+    public void onBackPressed() {
+        stopDialog = new CustomAlertDialog(context);
+        stopDialog.content("确定终止字库传输?")
+                .left("继续")
+                .right("终止")
+                .setOnClickListener(new CustomAlertDialog.OnClickListener() {
+                    @Override
+                    public void onLeftClick(CustomAlertDialog dialog) {
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onRightClick(CustomAlertDialog dialog) {
+                        dialog.dismiss();
+                        dismiss();
+                    }
+                }).show();
+        stopDialog.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                stopDialog = null;
+            }
+        });
+
+    }
 }

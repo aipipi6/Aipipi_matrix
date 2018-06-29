@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 
 public class DotMatrixView extends View {
@@ -34,6 +35,7 @@ public class DotMatrixView extends View {
     private int startColumn = 0;
     private int scrollTime = 50;
     private boolean isScroll = false;
+    private int width, height;
 
     public DotMatrixView(Context context) {
         this(context, null);
@@ -49,19 +51,19 @@ public class DotMatrixView extends View {
         dotPaint.setStyle(Paint.Style.STROKE);
         dotPaint.setAntiAlias(true);
 
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                width = getWidth();
+                height = getHeight();
+                initParams();
+                return true;
+            }
+        });
     }
 
-    public void setMatrix(boolean[][] _matrix) {
-        this.matrix = _matrix;
-        requestLayout();
-        invalidate();
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width  = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
+    private void initParams() {
         int scale = 9;
         if(matrix != null && matrix.length != 0) {
             totalRow = matrix[0].length;
@@ -75,6 +77,12 @@ public class DotMatrixView extends View {
             totalColumn++;
         }
         startColumn = -totalColumn;
+    }
+
+    public void setMatrix(boolean[][] _matrix) {
+        this.matrix = _matrix;
+        initParams();
+        invalidate();
     }
 
     public void startScroll(int scrollTime) {

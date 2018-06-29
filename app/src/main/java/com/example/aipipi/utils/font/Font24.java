@@ -43,11 +43,13 @@ class Font24 {
 					zkFileName = "font/24x24/HZK24T";
 					IOffset = getPunctuationOffset(hz);
 					fontHexLen = 72;
-				} else {
+				} else if(FontUtils.isChinese(hzChar)){
 					String c = fontStyleMap.get(fontStyle);
 					zkFileName =  "font/24x24/HZK24" + (c == null ? "S" : c);
 					IOffset = getOffset(hz);
 					fontHexLen = 72;
+				} else {
+					continue;
 				}
 				InputStream is = Utils.getApp().getAssets().open(zkFileName); //new FileInputStream(zkFilePath);
 				is.skip(IOffset);
