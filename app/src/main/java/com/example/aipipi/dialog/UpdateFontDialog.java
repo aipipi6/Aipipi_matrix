@@ -78,13 +78,20 @@ public class UpdateFontDialog extends BaseNormalDialog {
         if(index >= fontList.size()) {
             return ;
         }
+        int offset = 0;
+        for(int i = 0; i < index; i++) {
+            offset += fontList.get(i).length;
+        }
+
         byte[] font = fontList.get(index);
-        byte[] fontBytes = Protocol.newBytes(Protocol.CMD_UPTATE_FONT, 2 + font.length);
+        byte[] fontBytes = Protocol.newBytes(Protocol.CMD_UPTATE_FONT, 4 + font.length);
         int startIndex = Protocol.HEADER_LEN;
         fontBytes[startIndex] = (byte)(index & 0xFF);
         fontBytes[startIndex + 1] = (byte)(fontList.size() & 0xFF);
+        fontBytes[startIndex + 2] = (byte) ((offset >> 8) * 0xFF);
+        fontBytes[startIndex + 3] = (byte) ((offset     ) * 0xFF);
 
-        System.arraycopy(font, 0, fontBytes, startIndex + 2, font.length);
+        System.arraycopy(font, 0, fontBytes, startIndex + 4, font.length);
         Protocol.setCheckSum(fontBytes);
 
         MainActivity.sBleService.send(fontBytes);
