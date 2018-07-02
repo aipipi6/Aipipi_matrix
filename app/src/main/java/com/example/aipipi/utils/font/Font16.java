@@ -71,8 +71,8 @@ class Font16 {
 					
 					Arrays.fill(fontHex, (byte) 0);
 					for(int x = 0; x < points.length; x++) {
-						for(int y = 0; y < points[i].length; y++) {
-							int index = x * points[i].length + y;
+						for(int y = 0; y < points[x].length; y++) {
+							int index = x * points[x].length + y;
 							index = index / 8;
 							if(points[x][y]) {
 								fontHex[index] |= 1 << (7 - y % 8);
