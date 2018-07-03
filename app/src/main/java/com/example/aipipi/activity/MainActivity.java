@@ -37,7 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends BaseToolBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:37:00:B6:2E";
+    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
 
     @BindView(R.id.itv_ble)
     ImageTextView itvBle;
