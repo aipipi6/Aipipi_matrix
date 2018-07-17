@@ -17,6 +17,7 @@ import com.freelink.library.dialog.BaseNormalDialog;
 import com.freelink.library.dialog.CustomAlertDialog;
 import com.freelink.library.widget.CircularProgressView;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +34,16 @@ public class UpdateFontDialog extends BaseNormalDialog {
     public UpdateFontDialog(@NonNull Context context, @NonNull List<byte[]> fontList) {
         super(context);
         this.fontList = fontList;
+        for(int i = 0; i < 4; i++) {
+            byte[] emptyFont = new byte[72];
+            Arrays.fill(emptyFont, (byte) 0x00);
+            fontList.add(0, emptyFont);
+        }
+        for(int i = 0; i < 4; i++) {
+            byte[] emptyFont = new byte[72];
+            Arrays.fill(emptyFont, (byte) 0x00);
+
+        }
     }
 
     @Override
@@ -84,6 +95,14 @@ public class UpdateFontDialog extends BaseNormalDialog {
         }
 
         byte[] font = fontList.get(index);
+        for(int i = 0; i < font.length; i++) {
+            byte temp = font[i];
+            font[i] = 0;
+            for(int j = 0; j < 8; j++) {
+                int bit = ((temp >>> j) & 0x01);
+                font[i] |= (byte)(bit << (7 - j));
+            }
+        }
         byte[] fontBytes = Protocol.newBytes(Protocol.CMD_UPTATE_FONT, 4 + font.length);
         int startIndex = Protocol.HEADER_LEN;
         fontBytes[startIndex] = (byte)(index & 0xFF);
