@@ -156,4 +156,24 @@
         android:layout_marginLeft="24dp"/>
 
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="32dp"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<View-->
+            <!--android:layout_width="32dp"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:background="@drawable/led_red"/>-->
+
+
+        <!--<View-->
+            <!--android:layout_width="32dp"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:layout_marginLeft="32dp"-->
+            <!--android:background="@drawable/led_blue"/>-->
+    <!--</LinearLayout>-->
+
 </LinearLayout>

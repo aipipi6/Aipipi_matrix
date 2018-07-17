@@ -88,8 +88,8 @@ public class UpdateFontDialog extends BaseNormalDialog {
         int startIndex = Protocol.HEADER_LEN;
         fontBytes[startIndex] = (byte)(index & 0xFF);
         fontBytes[startIndex + 1] = (byte)(fontList.size() & 0xFF);
-        fontBytes[startIndex + 2] = (byte) ((offset >> 8) * 0xFF);
-        fontBytes[startIndex + 3] = (byte) ((offset     ) * 0xFF);
+        fontBytes[startIndex + 2] = (byte) ((offset >> 8) & 0xFF);
+        fontBytes[startIndex + 3] = (byte) ((offset     ) & 0xFF);
 
         System.arraycopy(font, 0, fontBytes, startIndex + 4, font.length);
         Protocol.setCheckSum(fontBytes);

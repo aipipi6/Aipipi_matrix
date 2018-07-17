@@ -37,7 +37,8 @@ import butterknife.OnClick;
 public class MainActivity extends BaseToolBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:37:00:B6:2E";
+    private static final int DEFAULE_FONT_SIZE = FontUtils.FONT_SIZE_24;
+    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
 
     @BindView(R.id.itv_ble)
     ImageTextView itvBle;
@@ -217,7 +218,7 @@ public class MainActivity extends BaseToolBarActivity {
         final String fontType = sFontTyps[index];
 
         textFont.setText(text);
-        textFont.setFontSize(FontUtils.FONT_SIZE_16);
+        textFont.setFontSize(DEFAULE_FONT_SIZE);
         textFont.setFontType(fontType);
     }
 
