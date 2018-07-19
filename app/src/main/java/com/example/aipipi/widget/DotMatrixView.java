@@ -17,16 +17,7 @@ public class DotMatrixView extends View {
     private int dotColorEmpty = 0xFFCCCCCC;
     private int dotColorFull = 0xFF000000;
     private Paint dotPaint;
-    private boolean[][] matrix = {
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-    };
+    private boolean[][] matrix = new boolean[24][24];
 
     private float dotSpace;
     private float dotSize;
@@ -35,6 +26,7 @@ public class DotMatrixView extends View {
     private int startColumn = 0;
     private int scrollTime = 50;
     private boolean isScroll = false;
+    private boolean isAddFont = false;
     private int width, height;
 
     public DotMatrixView(Context context) {
@@ -81,6 +73,7 @@ public class DotMatrixView extends View {
 
     public void setMatrix(boolean[][] _matrix) {
         this.matrix = _matrix;
+        isAddFont = true;
         initParams();
         invalidate();
     }
@@ -95,6 +88,14 @@ public class DotMatrixView extends View {
 
     public void stopScroll() {
         isScroll = false;
+    }
+
+    public void resumeScroll() {
+        if(isAddFont) {
+            isScroll = true;
+            handler.removeCallbacks(scrollTask);
+            handler.postDelayed(scrollTask, scrollTime);
+        }
     }
 
     Handler handler = new Handler();
@@ -133,6 +134,7 @@ public class DotMatrixView extends View {
 
         }
     }
+
 
     @Override
     protected void onDetachedFromWindow() {

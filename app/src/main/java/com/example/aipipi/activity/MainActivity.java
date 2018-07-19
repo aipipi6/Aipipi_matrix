@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.example.aipipi.R;
 import com.example.aipipi.base.BaseCallBack;
 import com.example.aipipi.base.BaseToolBarActivity;
@@ -255,6 +256,18 @@ public class MainActivity extends BaseToolBarActivity {
                 }
             }
         }.execute();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dotMatrixView.stopScroll();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dotMatrixView.resumeScroll();
     }
 
     @Override
