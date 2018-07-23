@@ -8,21 +8,23 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.example.aipipi.R;
 import com.example.aipipi.base.BaseCallBack;
 import com.example.aipipi.base.BaseToolBarActivity;
 import com.example.aipipi.ble.BleService;
 import com.example.aipipi.ble.observer.BleConnectionObserver;
 import com.example.aipipi.ble.observer.BleScanObserver;
-import com.example.aipipi.dialog.MakeFontDialog;
 import com.example.aipipi.dialog.UpdateFontDialog;
 import com.example.aipipi.entity.TextFont;
+import com.example.aipipi.protocol.Protocol;
 import com.example.aipipi.utils.font.OnMakeFontListener;
 import com.example.aipipi.widget.DotMatrixView;
 import com.example.aipipi.utils.StringUtil;
@@ -39,7 +41,8 @@ public class MainActivity extends BaseToolBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int DEFAULE_FONT_SIZE = FontUtils.FONT_SIZE_24;
-    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
+//    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
+    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:37:00:B6:2E";
 
     @BindView(R.id.itv_ble)
     ImageTextView itvBle;
@@ -47,13 +50,21 @@ public class MainActivity extends BaseToolBarActivity {
     @BindView(R.id.ll_font)
     LinearLayout llFont;
 
-    @BindView(R.id.editText)
+    @BindView(R.id.ll_color)
+    LinearLayout llColor;
+
+    @BindView(R.id.et_text)
     EditText editText;
+
+    @BindView(R.id.tv_text_count)
+    TextView tvTextCount;
 
     @BindView(R.id.multiDotMatrixView)
     DotMatrixView dotMatrixView;
 
-    private RadioGroupHelper radioGroupHelper;
+    private RadioGroupHelper fontRadioGroupHelper;
+    private RadioGroupHelper colorRadioGroupHelper;
+
     final static String[] sFontTyps = {"宋体", "黑体", "仿宋", "楷体"};
     private TextFont textFont;
 
@@ -71,12 +82,52 @@ public class MainActivity extends BaseToolBarActivity {
 
         showToolBar(false);
 
-        radioGroupHelper = new RadioGroupHelper(llFont, 0);
+        fontRadioGroupHelper = new RadioGroupHelper(llFont, 0);
 
-        radioGroupHelper.setOnCheckedChangeListener(new RadioGroupHelper.OnCheckedChangeListener() {
+        fontRadioGroupHelper.setOnCheckedChangeListener(new RadioGroupHelper.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(View v, int index) {
-                LogUtils.e(index + "/" + radioGroupHelper.getCheckedRadioIndex());
+//                LogUtils.e(index + "/" + fontRadioGroupHelper.getCheckedRadioIndex());
+            }
+        });
+
+        dotMatrixView.setDotColor(getColorFromRes(R.color.red));
+        colorRadioGroupHelper = new RadioGroupHelper(llColor, 0);
+        colorRadioGroupHelper.setOnCheckedChangeListener(new RadioGroupHelper.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(View v, int index) {
+                if(index == 0) {
+                    dotMatrixView.setDotColor(getColorFromRes(R.color.red));
+                } else {
+                    dotMatrixView.setDotColor(getColorFromRes(R.color.blue));
+                }
+                if(sBleService.isConnected()) {
+                    byte[] colorBytes = Protocol.newBytes(Protocol.CMD_UPDATE_COLOR, 1);
+                    int startIndex = Protocol.HEADER_LEN;
+                    colorBytes[startIndex] = (byte) (index & 0xFF);
+                    Protocol.setCheckSum(colorBytes);
+                    MainActivity.sBleService.send(colorBytes);
+                } else {
+                    showToast("请先连接蓝牙设备");
+                }
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int count = s.toString().length();
+                tvTextCount.setText(count + "/" + 120);
             }
         });
     }
@@ -202,6 +253,8 @@ public class MainActivity extends BaseToolBarActivity {
         if(!sBleService.isConnected()
                 && !sBleService.isConnecting()) {
             sBleService.startDiscovery();
+        } else {
+            sBleService.disConnect();
         }
     }
 
@@ -215,7 +268,7 @@ public class MainActivity extends BaseToolBarActivity {
             showToast("请输入文本");
             return;
         }
-        int index = radioGroupHelper.getCheckedRadioIndex();
+        int index = fontRadioGroupHelper.getCheckedRadioIndex();
         final String fontType = sFontTyps[index];
 
         textFont.setText(text);

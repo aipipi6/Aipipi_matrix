@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,6 +17,7 @@ public class DotMatrixView extends View {
 
     private int dotColorEmpty = 0xFFCCCCCC;
     private int dotColorFull = 0xFF000000;
+    private int bgColor = Color.WHITE;
     private Paint dotPaint;
     private boolean[][] matrix = new boolean[24][24];
 
@@ -113,12 +115,16 @@ public class DotMatrixView extends View {
         }
     };
 
+    public void setDotColor(@ColorInt int color) {
+        this.dotColorFull = color;
+        invalidate();
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.RED);
+        canvas.drawColor(bgColor);
 
         for(int i = 0; i < totalColumn + 1; i++) {
             for (int j = 0; j < totalRow; j++) {

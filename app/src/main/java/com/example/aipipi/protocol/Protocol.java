@@ -7,8 +7,11 @@ package com.example.aipipi.protocol;
 public class Protocol {
 
 
-    public static final byte CMD_UPTATE_FONT = (byte) 0x01;
+    public static final byte CMD_UPDATE_FONT = (byte) 0x01;
     public static final byte ACK_UPTATE_FONT = (byte) 0x11;
+
+    public static final byte CMD_UPDATE_COLOR = (byte) 0x02;
+    public static final byte ACK_UPDATE_COLOR = (byte) 0x12;
 
 
     public static final byte START_TAG1 = (byte) 0x90;

@@ -22,6 +22,7 @@ public class RadioGroupHelper implements View.OnClickListener {
 
             childView.setSelected(i == checkedRadioIndex);
         }
+        this.checkedRadioIndex = checkedRadioIndex;
     }
 
     @Override
@@ -49,6 +50,7 @@ public class RadioGroupHelper implements View.OnClickListener {
 
     public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
+
     }
 
     public interface OnCheckedChangeListener {

@@ -103,7 +103,7 @@ public class UpdateFontDialog extends BaseNormalDialog {
                 font[i] |= (byte)(bit << (7 - j));
             }
         }
-        byte[] fontBytes = Protocol.newBytes(Protocol.CMD_UPTATE_FONT, 4 + font.length);
+        byte[] fontBytes = Protocol.newBytes(Protocol.CMD_UPDATE_FONT, 4 + font.length);
         int startIndex = Protocol.HEADER_LEN;
         fontBytes[startIndex] = (byte)(index & 0xFF);
         fontBytes[startIndex + 1] = (byte)(fontList.size() & 0xFF);

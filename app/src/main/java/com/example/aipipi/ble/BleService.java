@@ -61,6 +61,10 @@ public class BleService extends Service {
         BleManager.getInstance().connect(deviceAddr);
     }
 
+    public void disConnect() {
+        BleManager.getInstance().disConnect();
+    }
+
     public void send(byte... bytes) {
         BleManager.getInstance().send(bytes);
     }
