@@ -97,6 +97,8 @@
             android:gravity="top|left"
             android:lines="6"
             android:maxLength="120"
+            android:hint="请输入文本"
+            android:textColorHint="#999"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textSize="14sp" />
