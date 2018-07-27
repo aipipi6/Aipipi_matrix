@@ -85,7 +85,6 @@ public class MainActivity extends BaseToolBarActivity {
 
         showToolBar(false);
 
-        editText.setText(SPUtils.getInstance().getString(SP_PARAMS_TEXT));
         int fontType  = SPUtils.getInstance().getInt(SP_PARAMS_FONT_TYPE, 0);
         fontRadioGroupHelper = new RadioGroupHelper(llFont, fontType);
 
@@ -135,6 +134,7 @@ public class MainActivity extends BaseToolBarActivity {
                 tvTextCount.setText(count + "/" + 120);
             }
         });
+        editText.setText(SPUtils.getInstance().getString(SP_PARAMS_TEXT));
     }
 
     ServiceConnection bleServiceConnection = new ServiceConnection() {
