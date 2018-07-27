@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.example.aipipi.R;
 import com.example.aipipi.base.BaseCallBack;
 import com.example.aipipi.base.BaseToolBarActivity;
@@ -43,6 +44,8 @@ public class MainActivity extends BaseToolBarActivity {
     private static final int DEFAULE_FONT_SIZE = FontUtils.FONT_SIZE_24;
 //    private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:31:80:1E:9D";
     private static final String DEFAULT_BLE_DEVICE_ADDR = "98:D3:37:00:B6:2E";
+    private static final String SP_PARAMS_TEXT = "sp_params_text";
+    private static final String SP_PARAMS_FONT_TYPE = "sp_params_font_type";
 
     @BindView(R.id.itv_ble)
     ImageTextView itvBle;
@@ -82,7 +85,9 @@ public class MainActivity extends BaseToolBarActivity {
 
         showToolBar(false);
 
-        fontRadioGroupHelper = new RadioGroupHelper(llFont, 0);
+        editText.setText(SPUtils.getInstance().getString(SP_PARAMS_TEXT));
+        int fontType  = SPUtils.getInstance().getInt(SP_PARAMS_FONT_TYPE, 0);
+        fontRadioGroupHelper = new RadioGroupHelper(llFont, fontType);
 
         fontRadioGroupHelper.setOnCheckedChangeListener(new RadioGroupHelper.OnCheckedChangeListener() {
             @Override
@@ -227,6 +232,8 @@ public class MainActivity extends BaseToolBarActivity {
             public void onCallBack(List<byte[]> obj) {
                 dotMatrixView.setMatrix(FontUtils.convertMatrix(textFont.getFontSize(), textFont.getFontList()));
                 dotMatrixView.startScroll(100);
+                SPUtils.getInstance().put(SP_PARAMS_TEXT, textFont.getText());
+                SPUtils.getInstance().put(SP_PARAMS_FONT_TYPE, fontRadioGroupHelper.getCheckedRadioIndex());
             }
         });
     }
@@ -241,6 +248,8 @@ public class MainActivity extends BaseToolBarActivity {
                     UpdateFontDialog updateFontDialog = new UpdateFontDialog(context, fontList);
                     updateFontDialog.show();
                     updateFontDialog.startUpdate();
+                    SPUtils.getInstance().put(SP_PARAMS_TEXT, textFont.getText());
+                    SPUtils.getInstance().put(SP_PARAMS_FONT_TYPE, fontRadioGroupHelper.getCheckedRadioIndex());
                 }
             });
         } else {
